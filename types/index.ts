@@ -17,6 +17,7 @@ export interface Issue {
   aiConfidence: number;
   aiRisk: string;
   department: string;
+  supporters?: string[];
   imageUrl?: string;
   createdAt: Date;
   updatedAt: Date;

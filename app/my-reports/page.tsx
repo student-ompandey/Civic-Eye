@@ -133,62 +133,68 @@ export default function MyReportsPage() {
           )}
         </GlowCard>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+        
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
           {issues.map(issue => (
-            <Link href={`/issues/${issue._id}`} key={issue._id} className="block relative z-10">
-              <GlowCard customSize glowColor="orange" className="overflow-hidden p-0 border-zinc-800 transition-colors hover:border-[#ff4a1c]/50 bg-[#121212] shadow-xl">
-                <div className="flex h-full relative z-10">
-                  <div className="w-1/3 bg-zinc-900 relative border-r border-zinc-800 shrink-0">
-                    {issue.imageUrl ? (
-                      <Image 
-                        src={issue.imageUrl} 
-                        alt={issue.title}
-                        fill
-                        className="object-cover"
-                      />
-                    ) : (
-                      <div className="h-full w-full flex items-center justify-center bg-zinc-950/50">
-                        <FileText className="h-8 w-8 text-zinc-400/30" />
-                      </div>
-                    )}
-                    
-                    {/* Status Badge Over Image */}
-                    <div className="absolute top-2 left-2 bg-zinc-950/90 backdrop-blur-md px-2 py-1 rounded-md shadow-lg border border-zinc-800 flex items-center gap-1.5 z-10">
-                      <StatusIcon status={issue.status} />
-                      <span className="text-[10px] font-bold tracking-wide uppercase">{issue.status}</span>
+            <Link href={`/issues/${issue._id}`} key={issue._id} className="block group relative z-10">
+              <div className="absolute inset-0 bg-gradient-to-b from-[#ff4a1c]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl blur-xl -z-10" />
+              <Card className="overflow-hidden p-0 border-zinc-800 bg-[#121212] shadow-xl group-hover:border-[#ff4a1c]/50 transition-all duration-300 flex flex-col rounded-2xl h-full">
+                
+                {/* Image Section */}
+                <div className="w-full aspect-video bg-zinc-900 relative border-b border-zinc-800 shrink-0 overflow-hidden">
+                  {issue.imageUrl ? (
+                    <Image 
+                      src={issue.imageUrl} 
+                      alt={issue.title}
+                      fill
+                      className="object-cover transition-transform duration-700 group-hover:scale-110"
+                    />
+                  ) : (
+                    <div className="h-full w-full flex items-center justify-center bg-zinc-950/50">
+                      <FileText className="h-10 w-10 text-zinc-800" />
                     </div>
-                  </div>
+                  )}
                   
-                  <div className="w-2/3 p-4 flex flex-col gap-2 justify-between">
-                    <div>
-                      <div className="flex justify-between items-start mb-1">
-                        <h3 className="font-bold text-base tracking-tight text-white line-clamp-1">{issue.title}</h3>
-                        <span className="text-[10px] text-zinc-400 font-medium shrink-0">
-                          {new Date(issue.createdAt).toLocaleDateString()}
-                        </span>
-                      </div>
-                      
-                      <div className="flex flex-wrap gap-2 items-center mb-3">
-                        <SeverityBadge severity={issue.severity} />
-                        <span className="text-[10px] text-zinc-400 font-semibold bg-muted px-1.5 py-0.5 rounded border border-border/60">
-                          {issue.category}
-                        </span>
-                      </div>
-
-                      <p className="text-xs text-zinc-400 line-clamp-2 leading-relaxed">
-                        {issue.description}
-                      </p>
-                    </div>
-                    
-                    <div className="flex items-center gap-1.5 mt-2 pt-3 border-t border-zinc-800">
-                      <MapPin className="h-3.5 w-3.5 text-[#ff4a1c] shrink-0" />
-                      <span className="text-[10px] font-medium text-zinc-400 line-clamp-1">
-                        {issue.address}, {issue.city}
-                      </span>
-                    </div>
+                  {/* Status Badge */}
+                  <div className="absolute top-3 left-3 bg-[#0d0d0d]/90 backdrop-blur-md px-2.5 py-1.5 rounded-lg shadow-2xl border border-zinc-800 flex items-center gap-2 z-10">
+                    <StatusIcon status={issue.status} />
+                    <span className="text-[10px] font-black tracking-widest uppercase text-white">{issue.status}</span>
                   </div>
                 </div>
-              </GlowCard>
+                
+                {/* Content Section */}
+                <div className="w-full p-5 flex flex-col flex-1 bg-gradient-to-br from-[#121212] to-[#0d0d0d]">
+                  <div className="flex-1">
+                    <div className="flex justify-between items-start mb-2 gap-4">
+                      <h3 className="font-black text-xl tracking-tight text-white line-clamp-1 group-hover:text-[#ff4a1c] transition-colors">{issue.title}</h3>
+                      <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider shrink-0 bg-zinc-900 px-2 py-1 rounded-md border border-zinc-800/50">
+                        {new Date(issue.createdAt).toLocaleDateString()}
+                      </span>
+                    </div>
+                    
+                    <div className="flex flex-wrap gap-2 items-center mb-4">
+                      <SeverityBadge severity={issue.severity} />
+                      <span className="text-[10px] text-zinc-300 font-semibold bg-zinc-900 px-2 py-1 rounded-md border border-zinc-800">
+                        {issue.category}
+                      </span>
+                    </div>
+
+                    <p className="text-sm text-zinc-400 line-clamp-2 leading-relaxed font-medium">
+                      {issue.description || 'No description provided.'}
+                    </p>
+                  </div>
+                  
+                  <div className="flex items-center gap-2 mt-5 pt-4 border-t border-zinc-800/50">
+                    <div className="h-6 w-6 rounded-full bg-[#ff4a1c]/10 flex items-center justify-center shrink-0">
+                      <MapPin className="h-3 w-3 text-[#ff4a1c]" />
+                    </div>
+                    <span className="text-xs font-semibold text-zinc-500 line-clamp-1 group-hover:text-zinc-300 transition-colors">
+                      {issue.address}, {issue.city}
+                    </span>
+                  </div>
+                </div>
+              </Card>
             </Link>
           ))}
         </div>

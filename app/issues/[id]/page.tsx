@@ -6,7 +6,7 @@ import { PageContainer } from '@/components/shared/PageContainer';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { SeverityBadge } from '@/components/ui/severity-badge';
 import { Button } from '@/components/ui/button';
-import { Loader2, ArrowLeft, Brain, MapPin, CheckCircle2, ShieldAlert, Clock, AlertCircle, Share2, ThumbsUp } from 'lucide-react';
+import { Loader2, ArrowLeft, Brain, MapPin, CheckCircle2, ShieldAlert, Clock, AlertCircle, Share2, ThumbsUp, Activity } from 'lucide-react';
 import Image from 'next/image';
 
 export default function IssueDetailPage() {
@@ -123,8 +123,8 @@ export default function IssueDetailPage() {
   }
 
   return (
-    <div className="flex-1 bg-zinc-50 dark:bg-zinc-950/50 min-h-screen pb-12">
-      <div className="bg-background border-b border-border/40 py-4 shadow-xs sticky top-16 z-20">
+    <div className="flex-1 bg-zinc-50 min-h-screen pb-12 pt-28">
+      <div className="bg-background/80 backdrop-blur-md border-b border-border/40 py-4 shadow-xs relative z-10">
         <PageContainer className="flex items-center justify-between">
           <button 
             onClick={() => router.back()} 
@@ -165,7 +165,7 @@ export default function IssueDetailPage() {
                 {issue.status}
               </span>
             </div>
-            <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-foreground leading-tight">
+            <h1 className="text-3xl sm:text-5xl font-black tracking-tighter text-foreground leading-tight mt-1">
               {issue.title}
             </h1>
           </div>
@@ -189,12 +189,88 @@ export default function IssueDetailPage() {
             </p>
           </div>
 
+
+          {/* Civic Priority Card */}
+          {issue.priority && (
+            <Card hoverEffect={false} className="border-border/60 overflow-hidden relative shadow-lg bg-zinc-50/50 bg-background">
+              <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
+                <Activity className="h-32 w-32" />
+              </div>
+              <CardHeader className="pb-4 border-b border-border/40 bg-muted/20">
+                <CardTitle className="text-sm flex items-center gap-2">
+                  <Activity className="h-4 w-4" />
+                  Civic Priority Score
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="pt-6 pb-5 relative z-10">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
+                  {/* Score Display */}
+                  <div className="flex flex-col items-center justify-center shrink-0">
+                    <div className="relative h-28 w-28 flex items-center justify-center">
+                      <svg className="absolute inset-0 h-full w-full -rotate-90 transform">
+                        <circle cx="56" cy="56" r="50" fill="none" className="stroke-muted" strokeWidth="8" />
+                        <circle 
+                          cx="56" 
+                          cy="56" 
+                          r="50" 
+                          fill="none" 
+                          strokeDasharray="314.159"
+                          strokeDashoffset={314.159 - (314.159 * issue.priority.score) / 100}
+                          className={`${
+                            issue.priority.level === 'urgent' ? 'stroke-red-500' : 
+                            issue.priority.level === 'high' ? 'stroke-orange-500' :
+                            issue.priority.level === 'moderate' ? 'stroke-amber-500' :
+                            'stroke-emerald-500'
+                          } transition-all duration-1000 ease-out`} 
+                          strokeWidth="8" 
+                          strokeLinecap="round" 
+                        />
+                      </svg>
+                      <div className="flex flex-col items-center justify-center">
+                        <span className="text-3xl font-black tabular-nums">{issue.priority.score}</span>
+                        <span className="text-[10px] font-bold text-muted-foreground">/ 100</span>
+                      </div>
+                    </div>
+                    <span className={`mt-3 text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full border ${
+                      issue.priority.level === 'urgent' ? 'bg-red-500/10 text-red-500 border-red-500/20' : 
+                      issue.priority.level === 'high' ? 'bg-orange-500/10 text-orange-500 border-orange-500/20' :
+                      issue.priority.level === 'moderate' ? 'bg-amber-500/10 text-amber-500 border-amber-500/20' :
+                      'bg-emerald-500/10 text-emerald-500 border-[#ff4a1c]/50 bg-emerald-100/20'
+                    }`}>
+                      {issue.priority.level}
+                    </span>
+                  </div>
+
+                  {/* Factors */}
+                  <div className="flex-1">
+                    <h4 className="text-sm font-semibold mb-3">Priority increased because:</h4>
+                    <ul className="space-y-2">
+                      {issue.priority.factors.map((factor: any, idx: number) => (
+                        <li key={idx} className="flex items-start gap-2 text-sm text-muted-foreground">
+                          <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-brand-blue/50 shrink-0" />
+                          <span className="font-medium">{factor.name}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+
+                <div className="mt-6 pt-4 border-t border-border/40">
+                  <p className="text-[10px] text-muted-foreground/80 leading-relaxed font-medium">
+                    The priority score is an AI-assisted decision-support indicator based on reported data and is not an official government priority ranking.
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+
           {/* AI Analysis Card */}
           <Card hoverEffect={false} className="border-brand-blue/20 bg-brand-blue/5 overflow-hidden relative">
             <div className="absolute top-0 right-0 p-3 opacity-10 pointer-events-none">
               <Brain className="h-24 w-24" />
             </div>
-            <CardHeader className="pb-3 border-b border-brand-blue/10">
+            <CardHeader className="pb-3 border-b border-border/40">
               <CardTitle className="text-sm flex items-center gap-2 text-brand-blue">
                 <Brain className="h-4 w-4" />
                 AI-Generated Analysis
@@ -235,7 +311,7 @@ export default function IssueDetailPage() {
             </CardHeader>
             <CardContent className="pt-5 flex flex-col items-center gap-4 text-center">
               <div className="flex items-center gap-2">
-                <div className="h-10 w-10 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
+                <div className="h-10 w-10 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600">
                   <ThumbsUp className="h-5 w-5" />
                 </div>
                 <div className="text-left">
@@ -246,7 +322,7 @@ export default function IssueDetailPage() {
 
               <Button 
                 variant={hasSupported ? "outline" : "default"}
-                className={`w-full font-bold ${!hasSupported ? 'bg-brand-blue hover:bg-brand-blue/90 text-white' : 'border-emerald-500 text-emerald-600 dark:text-emerald-400 pointer-events-none'}`}
+                className={`w-full font-bold ${!hasSupported ? 'bg-gradient-to-r from-[#ff4a1c] to-[#ff2a00] hover:scale-[1.02] transition-transform text-foreground shadow-lg shadow-[#ff4a1c]/20 border-none' : 'border-[#ff4a1c]/50 bg-emerald-100 text-brand-blue pointer-events-none'}`}
                 onClick={handleSupport}
                 disabled={supporting || hasSupported}
               >
@@ -292,7 +368,7 @@ export default function IssueDetailPage() {
                 {timeline.map((step, idx) => (
                   <div key={idx} className={`relative ${!step.active ? 'opacity-40 grayscale' : ''}`}>
                     <div className={`absolute -left-[27px] top-0 h-5 w-5 rounded-full flex items-center justify-center border-2 ${
-                      step.active ? 'bg-background border-brand-blue text-brand-blue' : 'bg-muted border-muted-foreground text-muted-foreground'
+                      step.active ? 'bg-muted border-[#ff4a1c] text-brand-blue' : 'bg-muted border-muted-foreground text-muted-foreground'
                     }`}>
                       <step.icon className="h-2.5 w-2.5" />
                     </div>
