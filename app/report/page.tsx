@@ -832,111 +832,146 @@ export default function ReportIssue() {
               {/* STEP 4: REVIEW SUMMARY */}
               {currentStep === 4 && (
                 <Card hoverEffect={false} className="border-zinc-800 bg-[#121212] shadow-2xl flex-1 flex flex-col justify-between">
-                  <CardHeader>
-                    <CardTitle>Review Your Report</CardTitle>
-                    <CardDescription>
-                      Verify details of your ticket before submitting to the city dashboard.
-                    </CardDescription>
+                  <CardHeader className="border-b border-zinc-800/50 pb-5">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <CardTitle className="text-xl">Review Ticket Summary</CardTitle>
+                        <CardDescription className="mt-1">
+                          Final verification before dispatching to the city dashboard.
+                        </CardDescription>
+                      </div>
+                      <div className="flex flex-col items-end">
+                         <span className="text-[10px] uppercase tracking-widest text-zinc-500 font-bold">Status</span>
+                         <span className="text-sm font-bold text-amber-500 animate-pulse">PENDING SUBMISSION</span>
+                      </div>
+                    </div>
                   </CardHeader>
-                  <CardContent className="flex-1 py-4">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <CardContent className="flex-1 py-6">
+                    <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
                       
-                      {/* Image Preview Left */}
-                      <div className="md:col-span-1 flex flex-col gap-2">
-                        <span className="text-xs font-semibold text-zinc-400">Selected Photo</span>
+                      {/* Left: Photo Column (Col-span 5) */}
+                      <div className="md:col-span-5 flex flex-col gap-3">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Evidence</span>
+                          <button onClick={() => setCurrentStep(1)} className="text-[#ff4a1c] flex items-center gap-1 text-[10px] font-bold hover:underline">
+                            <Edit2 className="h-3 w-3" /> Edit
+                          </button>
+                        </div>
                         {previewUrl && (
-                          <div className="rounded-xl overflow-hidden border border-border/80 aspect-square">
-                            <Image src={previewUrl} alt="Reported issue summary" width={400} height={400} unoptimized className="w-full h-full object-cover" />
-                          </div>
-                        )}
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => setCurrentStep(1)}
-                          className="w-full mt-2 font-semibold text-xs cursor-pointer"
-                        >
-                          <Edit2 className="h-3 w-3 mr-1" />
-                          Edit Photo
-                        </Button>
-                      </div>
-
-                      {/* Issue Details Center */}
-                      <div className="md:col-span-1 flex flex-col gap-4 border-r border-zinc-800 pr-4">
-                        <div className="flex flex-col gap-1">
-                          <span className="text-xs font-semibold text-zinc-400 flex items-center justify-between">
-                            Issue Info
-                            <button onClick={() => setCurrentStep(2)} className="text-[#ff4a1c] text-[10px] font-bold hover:underline">
-                              Edit
-                            </button>
-                          </span>
-                          <span className="text-sm font-bold text-foreground">{aiData.category}</span>
-                          <div className="flex gap-2 items-center mt-1">
-                            <SeverityBadge severity={aiData.severity} />
-                            <span className="text-[10px] text-zinc-400 font-semibold bg-muted/40 px-2 py-0.5 rounded-md border">
-                              {aiData.confidence}% Confidence
-                            </span>
-                          </div>
-                        </div>
-
-                        <div className="flex flex-col gap-1">
-                          <span className="text-xs font-semibold text-zinc-400">Description</span>
-                          <p className="text-xs text-zinc-400 leading-relaxed bg-zinc-50 dark:bg-zinc-950/20 p-2.5 rounded-lg border border-zinc-800">
-                            {aiData.description}
-                          </p>
-                        </div>
-
-                        <div className="flex flex-col gap-1">
-                          <span className="text-xs font-semibold text-zinc-400">Assigned Department</span>
-                          <span className="text-xs font-semibold text-foreground bg-muted/40 border px-2 py-1 rounded-md w-fit">
-                            {aiData.department}
-                          </span>
-                        </div>
-                      </div>
-
-                      {/* Location Details Right */}
-                      <div className="md:col-span-1 flex flex-col gap-4">
-                        <div className="flex flex-col gap-1">
-                          <span className="text-xs font-semibold text-zinc-400 flex items-center justify-between">
-                            Report Location
-                            <button onClick={() => setCurrentStep(3)} className="text-[#ff4a1c] text-[10px] font-bold hover:underline">
-                              Edit
-                            </button>
-                          </span>
-                          <div className="flex items-start gap-1.5 mt-1 text-xs text-foreground font-semibold">
-                            <MapPin className="h-4.5 w-4.5 shrink-0 text-[#ff4a1c] mt-0.5" />
-                            <div>
-                              <p>{address}</p>
-                              {landmark && <p className="text-zinc-400 text-[10px] font-normal">{landmark}</p>}
-                              <p className="text-zinc-400 text-[10px] font-normal">{city}, {stateName}</p>
+                          <div className="relative rounded-xl overflow-hidden border border-zinc-800 aspect-square group shadow-inner">
+                            <Image src={previewUrl} alt="Reported issue summary" width={400} height={400} unoptimized className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none" />
+                            <div className="absolute bottom-3 left-3 flex items-center gap-2">
+                                <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                                <span className="text-[10px] font-bold text-white tracking-wide">IMAGE VERIFIED</span>
                             </div>
                           </div>
+                        )}
+                      </div>
+
+                      {/* Right: Details Column (Col-span 7) */}
+                      <div className="md:col-span-7 flex flex-col gap-4">
+                        
+                        {/* Issue Info Card */}
+                        <div className="p-4 rounded-xl border border-zinc-800/60 bg-zinc-900/30 flex flex-col gap-4 relative overflow-hidden group">
+                          <div className="absolute top-0 right-0 w-32 h-32 bg-[#ff4a1c]/5 blur-3xl rounded-full -mr-10 -mt-10 transition-all duration-500 group-hover:bg-[#ff4a1c]/10" />
+                          
+                          <div className="flex items-start justify-between relative z-10">
+                            <div className="flex items-center gap-2">
+                              <span className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Issue Details</span>
+                            </div>
+                            <button onClick={() => setCurrentStep(2)} className="text-[#ff4a1c] flex items-center gap-1 text-[10px] font-bold hover:underline">
+                              <Edit2 className="h-3 w-3" /> Edit
+                            </button>
+                          </div>
+
+                          <div className="relative z-10">
+                            <h3 className="text-lg font-bold text-white mb-2">{aiData.category}</h3>
+                            <div className="flex flex-wrap gap-2 items-center">
+                              <SeverityBadge severity={aiData.severity} />
+                              <div className="flex items-center gap-1.5 bg-[#ff4a1c]/10 border border-[#ff4a1c]/20 px-2.5 py-1 rounded-full">
+                                <Brain className="h-3 w-3 text-[#ff4a1c]" />
+                                <span className="text-[10px] font-bold text-[#ff4a1c]">
+                                  {aiData.confidence}% AI Confidence
+                                </span>
+                              </div>
+                              <span className="text-[10px] font-semibold text-zinc-300 bg-zinc-800 px-2.5 py-1 rounded-full border border-zinc-700">
+                                {aiData.department}
+                              </span>
+                            </div>
+                          </div>
+
+                          <div className="relative z-10 bg-black/20 p-3 rounded-lg border border-zinc-800/50 mt-1">
+                            <p className="text-xs text-zinc-300 leading-relaxed">
+                              {aiData.description}
+                            </p>
+                          </div>
                         </div>
 
-                        {coords && (
-                          <div className="p-3 rounded-lg border border-zinc-800 bg-zinc-50/50 dark:bg-zinc-950/10 flex flex-col gap-1">
-                            <span className="text-[10px] font-bold text-zinc-400">GPS Location Fixed</span>
-                            <span className="text-[10px] font-mono text-foreground font-semibold">
-                              Lat: {coords.lat.toFixed(6)}, Lng: {coords.lng.toFixed(6)}
-                            </span>
+                        {/* Location Card */}
+                        <div className="p-4 rounded-xl border border-zinc-800/60 bg-zinc-900/30 flex flex-col gap-4 relative overflow-hidden group">
+                           <div className="absolute bottom-0 right-0 w-24 h-24 bg-brand-blue/5 blur-2xl rounded-full -mr-5 -mb-5 transition-all duration-500 group-hover:bg-brand-blue/10" />
+
+                          <div className="flex items-start justify-between relative z-10">
+                            <span className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Location Data</span>
+                            <button onClick={() => setCurrentStep(3)} className="text-[#ff4a1c] flex items-center gap-1 text-[10px] font-bold hover:underline">
+                              <Edit2 className="h-3 w-3" /> Edit
+                            </button>
                           </div>
-                        )}
+
+                          <div className="flex items-start gap-3 relative z-10">
+                            <div className="mt-0.5 h-8 w-8 rounded-full bg-zinc-800/80 flex items-center justify-center shrink-0 border border-zinc-700">
+                                <MapPin className="h-4 w-4 text-[#ff4a1c]" />
+                            </div>
+                            <div className="flex flex-col gap-0.5">
+                              <span className="text-sm font-bold text-white">{address}</span>
+                              {landmark && <span className="text-xs text-zinc-400">{landmark}</span>}
+                              <span className="text-xs text-zinc-500">{city}, {stateName}</span>
+                            </div>
+                          </div>
+
+                          {coords && (
+                            <div className="relative z-10 mt-1 flex items-center justify-between bg-black/30 p-2.5 rounded-lg border border-zinc-800/50">
+                              <div className="flex items-center gap-2">
+                                <div className="relative flex h-2 w-2">
+                                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-blue opacity-75"></span>
+                                  <span className="relative inline-flex rounded-full h-2 w-2 bg-brand-blue"></span>
+                                </div>
+                                <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">GPS Lock Active</span>
+                              </div>
+                              <span className="text-[10px] font-mono font-medium text-brand-blue">
+                                {coords.lat.toFixed(5)}, {coords.lng.toFixed(5)}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+
                       </div>
 
                     </div>
                   </CardContent>
-                  <CardFooter className="flex-col border-t border-zinc-800 py-4 bg-zinc-900/30 rounded-b-xl gap-3">
-                    <div className="flex justify-between w-full">
-                      <Button variant="outline" size="sm" onClick={handleBack} disabled={submitting} className="font-semibold cursor-pointer">
+                  <CardFooter className="flex-col border-t border-zinc-800 py-4 bg-zinc-900/40 rounded-b-xl gap-4">
+                    <div className="flex justify-between w-full items-center">
+                      <Button variant="ghost" size="sm" onClick={handleBack} disabled={submitting} className="font-semibold cursor-pointer text-zinc-400 hover:text-white hover:bg-zinc-800">
                         <ChevronLeft className="h-4 w-4 mr-1" />
-                        Back
+                        Back to Edits
                       </Button>
-                      <Button variant="default" onClick={handleNext} disabled={submitting} className="bg-[#ff4a1c] hover:bg-[#ff4a1c]/90 text-white font-bold shadow-lg shadow-[#ff4a1c]/20 border-none cursor-pointer">
-                        {submitting ? 'Submitting...' : 'Submit Report'}
-                        {!submitting && <ChevronRight className="h-4 w-4 ml-1" />}
+                      <Button variant="default" size="lg" onClick={handleNext} disabled={submitting} className="bg-gradient-to-r from-[#ff4a1c] to-[#ff6a45] hover:from-[#e03a10] hover:to-[#ff4a1c] text-white font-bold shadow-lg shadow-[#ff4a1c]/25 border-none cursor-pointer transition-all hover:scale-[1.02]">
+                        {submitting ? (
+                          <>
+                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                            Processing...
+                          </>
+                        ) : (
+                          <>
+                            Confirm & Submit Report
+                            <ChevronRight className="h-4 w-4 ml-1" />
+                          </>
+                        )}
                       </Button>
                     </div>
                     {submissionError && (
-                      <div className="w-full mt-2 p-3.5 rounded-lg bg-red-100/60 dark:bg-red-950/20 text-red-600 dark:text-red-400 border border-red-200/40 dark:border-red-950/30 flex items-start gap-2 text-xs font-semibold">
+                      <div className="w-full p-3.5 rounded-lg bg-red-500/10 text-red-500 border border-red-500/20 flex items-start gap-2 text-xs font-semibold">
                         <ShieldAlert className="h-4 w-4 shrink-0 mt-0.5" />
                         <span>{submissionError}</span>
                       </div>

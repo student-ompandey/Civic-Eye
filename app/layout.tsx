@@ -32,7 +32,7 @@ export default function RootLayout({
       lang="en"
       className={`${outfit.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-background text-foreground font-sans relative">
+      <body className="min-h-full flex flex-col bg-[#0d0d0d] text-foreground font-sans relative">
         <Navbar />
         <main className="flex-1">
           {children}

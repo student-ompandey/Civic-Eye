@@ -4,7 +4,7 @@ import { SYSTEM_PROMPT } from './prompts';
 export async function analyzeIssue(imageBase64: string, mimeType: string) {
   // DEMO MODE FALLBACK
   const mockResponse = {
-    isIssue: true,
+    issueDetected: true,
     category: 'Road Pothole',
     severity: 'medium',
     confidence: 88,
@@ -46,7 +46,10 @@ export async function analyzeIssue(imageBase64: string, mimeType: string) {
       }
     });
 
-    const responseText = result.response.text();
+    let responseText = result.response.text();
+    // Strip markdown formatting if Gemini includes it despite responseMimeType
+    responseText = responseText.replace(/```json/gi, '').replace(/```/g, '').trim();
+    
     return JSON.parse(responseText);
   } catch (error) {
     console.error('Error analyzing image with Gemini, falling back to Demo Mode:', error);
