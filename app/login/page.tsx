@@ -84,9 +84,9 @@ export default function Login() {
   };
 
   return (
-    <div className="flex-1 flex flex-col justify-center py-12 relative overflow-hidden bg-radial from-brand-blue/5 via-transparent to-transparent">
+    <div className="flex-1 flex flex-col justify-center py-12 relative overflow-hidden bg-[#0d0d0d] text-white">
       {/* Background grid */}
-      <div className="absolute inset-0 -z-10 bg-[linear-gradient(to_right,oklch(0.92_0.01_250_/_30%)_1px,transparent_1px),linear-gradient(to_bottom,oklch(0.92_0.01_250_/_30%)_1px,transparent_1px)] dark:bg-[linear-gradient(to_right,oklch(0.22_0.03_250_/_30%)_1px,transparent_1px),linear-gradient(to_bottom,oklch(0.22_0.03_250_/_30%)_1px,transparent_1px)] bg-[size:3rem_3rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)]" />
+      <div className="absolute inset-0 -z-10 bg-[linear-gradient(to_right,oklch(0.92_0.01_250_/_5%)_1px,transparent_1px),linear-gradient(to_bottom,oklch(0.92_0.01_250_/_5%)_1px,transparent_1px)] bg-[size:3rem_3rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)]" />
 
       <PageContainer className="max-w-md w-full mx-auto px-4">
         <motion.div
@@ -98,16 +98,16 @@ export default function Login() {
           {/* Back button */}
           <Link
             href="/"
-            className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors w-fit"
+            className="inline-flex items-center gap-1 text-sm font-semibold tracking-wide text-zinc-400 hover:text-white transition-colors w-fit"
           >
             <ArrowLeft className="h-4 w-4" />
             Back to homepage
           </Link>
 
-          <Card className="border-border/60 bg-background/80 backdrop-blur-md shadow-xl">
+          <Card className="border-zinc-800 bg-[#0a0a0a]/90 backdrop-blur-xl shadow-2xl">
             <CardHeader className="text-center pb-4">
-              <CardTitle className="text-2xl font-bold tracking-tight">Sign In to Civic Eye</CardTitle>
-              <CardDescription>Enter your email and password to access your dashboard</CardDescription>
+              <CardTitle className="text-3xl font-bold tracking-tighter text-white">Sign In to Civic Eye</CardTitle>
+              <CardDescription className="text-zinc-400">Enter your email and password to access your dashboard</CardDescription>
             </CardHeader>
 
             <CardContent>
@@ -131,7 +131,7 @@ export default function Login() {
 
                 {/* Email Field */}
                 <div className="flex flex-col gap-1.5">
-                  <label htmlFor="email" className="text-xs font-semibold text-muted-foreground">
+                  <label htmlFor="email" className="text-xs font-semibold tracking-wide text-zinc-400">
                     Email Address
                   </label>
                   <input
@@ -141,8 +141,8 @@ export default function Login() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     disabled={loading}
-                    className={`w-full h-10 px-3 rounded-lg border bg-background/50 outline-hidden transition-all text-sm ${
-                      emailError ? 'border-red-500 focus:border-red-500 focus:ring-1 focus:ring-red-500' : 'border-border/80 focus:border-brand-blue/50 focus:ring-1 focus:ring-brand-blue/30'
+                    className={`w-full h-10 px-3 rounded-lg border bg-zinc-900/50 text-white outline-hidden transition-all text-sm ${
+                      emailError ? 'border-red-500/50 focus:border-red-500 focus:ring-1 focus:ring-red-500' : 'border-zinc-800 focus:border-[#ff4a1c]/50 focus:ring-1 focus:ring-[#ff4a1c]/30'
                     }`}
                   />
                   {emailError && <span className="text-[10px] text-red-500 font-semibold mt-0.5">{emailError}</span>}
@@ -150,7 +150,7 @@ export default function Login() {
 
                 {/* Password Field */}
                 <div className="flex flex-col gap-1.5">
-                  <label htmlFor="password" className="text-xs font-semibold text-muted-foreground">
+                  <label htmlFor="password" className="text-xs font-semibold tracking-wide text-zinc-400">
                     Password
                   </label>
                   <div className="relative">
@@ -161,15 +161,15 @@ export default function Login() {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       disabled={loading}
-                      className={`w-full h-10 pl-3 pr-10 rounded-lg border bg-background/50 outline-hidden transition-all text-sm ${
-                        passwordError ? 'border-red-500 focus:border-red-500 focus:ring-1 focus:ring-red-500' : 'border-border/80 focus:border-brand-blue/50 focus:ring-1 focus:ring-brand-blue/30'
+                      className={`w-full h-10 pl-3 pr-10 rounded-lg border bg-zinc-900/50 text-white outline-hidden transition-all text-sm ${
+                        passwordError ? 'border-red-500/50 focus:border-red-500 focus:ring-1 focus:ring-red-500' : 'border-zinc-800 focus:border-[#ff4a1c]/50 focus:ring-1 focus:ring-[#ff4a1c]/30'
                       }`}
                     />
                     <button
                       type="button"
                       disabled={loading}
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground cursor-pointer transition-colors"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-white cursor-pointer transition-colors"
                     >
                       {showPassword ? <EyeOff className="h-4.5 w-4.5" /> : <Eye className="h-4.5 w-4.5" />}
                     </button>
@@ -178,17 +178,17 @@ export default function Login() {
                 </div>
 
                 {/* Sign In Button */}
-                <Button type="submit" loading={loading} className="w-full bg-brand-blue hover:bg-brand-blue/90 text-white font-semibold shadow-xs mt-2">
+                <Button type="submit" loading={loading} className="w-full bg-[#ff4a1c] hover:bg-[#ff4a1c]/90 text-white font-bold shadow-lg shadow-[#ff4a1c]/20 border-none mt-2">
                   Sign In
                 </Button>
 
               </form>
             </CardContent>
 
-            <CardFooter className="justify-center border-t border-border/40 py-4 bg-muted/20 rounded-b-xl">
-              <p className="text-xs text-muted-foreground">
+            <CardFooter className="justify-center border-t border-zinc-800 py-4 bg-zinc-900/30 rounded-b-xl">
+              <p className="text-xs text-zinc-400 font-medium">
                 Don&apos;t have an account?{' '}
-                <Link href="/register" className="text-brand-blue font-semibold hover:underline">
+                <Link href="/register" className="text-[#ff4a1c] font-bold tracking-wide hover:underline">
                   Create one
                 </Link>
               </p>

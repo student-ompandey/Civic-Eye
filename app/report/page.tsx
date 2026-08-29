@@ -389,23 +389,23 @@ export default function ReportIssue() {
   };
 
   return (
-    <div className="flex-1 py-10 bg-radial from-brand-blue/3 via-transparent to-transparent relative">
+    <div className="flex-1 py-10 bg-[#0d0d0d] text-white relative">
       <PageContainer className="max-w-3xl w-full mx-auto px-4 flex flex-col gap-8">
         
         {/* Header navigation */}
         <div className="flex items-center gap-4">
-          <Link href="/dashboard" className="text-muted-foreground hover:text-foreground text-sm flex items-center gap-1 transition-colors">
+          <Link href="/dashboard" className="text-zinc-400 hover:text-foreground text-sm flex items-center gap-1 transition-colors">
             <ArrowLeft className="h-4 w-4" />
             Back to Dashboard
           </Link>
         </div>
 
         {/* Steps Progress Header */}
-        <div className="w-full bg-background border border-border/50 rounded-2xl p-6 shadow-xs">
+        <div className="w-full bg-[#121212] border border-zinc-800 rounded-2xl p-6 shadow-2xl">
           <div className="flex items-center justify-between relative">
             
             {/* Connection progress lines */}
-            <div className="absolute left-[3%] right-[3%] top-1/2 -translate-y-1/2 h-0.5 bg-border/80 -z-10" />
+            <div className="absolute left-[3%] right-[3%] top-1/2 -translate-y-1/2 h-0.5 bg-zinc-800 -z-10" />
             <div
               className="absolute left-[3%] top-1/2 -translate-y-1/2 h-0.5 bg-brand-blue transition-all duration-500 -z-10"
               style={{ width: `${((currentStep - 1) / (STEPS.length - 1)) * 94}%` }}
@@ -420,17 +420,17 @@ export default function ReportIssue() {
                   <div
                     className={`h-9 w-9 rounded-full flex items-center justify-center font-bold text-xs transition-all duration-300 ${
                       isCompleted
-                        ? 'bg-brand-blue text-white shadow-md shadow-brand-blue/15'
+                        ? 'bg-[#ff4a1c] text-white shadow-md shadow-[#ff4a1c]/20'
                         : isActive
-                        ? 'bg-background border-2 border-brand-blue text-brand-blue shadow-xs'
-                        : 'bg-muted border border-border text-muted-foreground'
+                        ? 'bg-[#121212] border-2 border-[#ff4a1c] text-[#ff4a1c] shadow-xs'
+                        : 'bg-zinc-900 border border-zinc-800 text-zinc-500'
                     }`}
                   >
                     {isCompleted ? <Check className="h-4.5 w-4.5" /> : step.number}
                   </div>
                   <span
                     className={`text-[10px] sm:text-xs font-semibold hidden md:inline transition-colors ${
-                      isActive ? 'text-brand-blue' : 'text-muted-foreground'
+                      isActive ? 'text-[#ff4a1c]' : 'text-zinc-400'
                     }`}
                   >
                     {step.label}
@@ -455,7 +455,7 @@ export default function ReportIssue() {
               
               {/* STEP 1: PHOTO UPLOAD */}
               {currentStep === 1 && (
-                <Card hoverEffect={false} className="border-border/60 shadow-lg flex-1 flex flex-col">
+                <Card hoverEffect={false} className="border-zinc-800 bg-[#121212] shadow-2xl flex-1 flex flex-col">
                   <CardHeader>
                     <CardTitle>Upload Issue Image</CardTitle>
                     <CardDescription>
@@ -482,11 +482,11 @@ export default function ReportIssue() {
                         onClick={triggerFileInput}
                         className="w-full max-w-md aspect-video border-2 border-dashed border-muted-foreground/30 hover:border-brand-blue/50 rounded-2xl flex flex-col items-center justify-center p-6 text-center cursor-pointer transition-colors bg-muted/10"
                       >
-                        <div className="h-12 w-12 rounded-full bg-brand-blue/10 text-brand-blue flex items-center justify-center mb-4">
+                        <div className="h-12 w-12 rounded-full bg-brand-blue/10 text-[#ff4a1c] flex items-center justify-center mb-4">
                           <Upload className="h-6 w-6" />
                         </div>
                         <h3 className="font-bold text-sm">Drag and drop your image here</h3>
-                        <p className="text-xs text-muted-foreground mt-1 mb-4">
+                        <p className="text-xs text-zinc-400 mt-1 mb-4">
                           Supports PNG, JPG, or WEBP up to 5MB
                         </p>
                         <Button type="button" variant="outline" size="sm" className="font-semibold cursor-pointer">
@@ -511,8 +511,8 @@ export default function ReportIssue() {
                       </div>
                     )}
                   </CardContent>
-                  <CardFooter className="justify-end border-t border-border/40 py-4 bg-muted/20 rounded-b-xl gap-3">
-                    <Button variant="default" onClick={handleNext} className="bg-brand-blue hover:bg-brand-blue/90 text-white font-semibold shadow-xs cursor-pointer">
+                  <CardFooter className="justify-end border-t border-zinc-800 py-4 bg-zinc-900/30 rounded-b-xl gap-3">
+                    <Button variant="default" onClick={handleNext} className="bg-[#ff4a1c] hover:bg-[#ff4a1c]/90 text-white font-bold shadow-lg shadow-[#ff4a1c]/20 border-none cursor-pointer">
                       Next Step
                       <ChevronRight className="h-4 w-4 ml-1" />
                     </Button>
@@ -522,10 +522,10 @@ export default function ReportIssue() {
 
               {/* STEP 2: AI ANALYSIS */}
               {currentStep === 2 && (
-                <Card hoverEffect={false} className="border-border/60 shadow-lg flex-1 flex flex-col justify-between">
+                <Card hoverEffect={false} className="border-zinc-800 bg-[#121212] shadow-2xl flex-1 flex flex-col justify-between">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
-                      <Sparkles className="h-5 w-5 text-brand-blue animate-pulse" />
+                      <Sparkles className="h-5 w-5 text-[#ff4a1c] animate-pulse" />
                       Gemini AI Analysis
                       {isDemoMode && (
                         <span className="ml-auto text-[10px] bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 px-2 py-0.5 rounded-full border border-amber-200 dark:border-amber-800 flex items-center gap-1 font-bold tracking-wider">
@@ -543,7 +543,7 @@ export default function ReportIssue() {
                       // Processing checklist view
                       <div className="flex flex-col gap-6 max-w-md mx-auto py-8">
                         <div className="flex items-center gap-3">
-                          <Loader2 className="h-5 w-5 animate-spin text-brand-blue" />
+                          <Loader2 className="h-5 w-5 animate-spin text-[#ff4a1c]" />
                           <h3 className="font-bold text-sm">AI analysis in progress...</h3>
                         </div>
                         <div className="flex flex-col gap-3.5">
@@ -554,14 +554,14 @@ export default function ReportIssue() {
                               <div
                                 key={idx}
                                 className={`flex items-center gap-3 text-xs font-medium transition-all ${
-                                  isPending ? 'text-muted-foreground/40' : isCurrent ? 'text-brand-blue' : 'text-foreground'
+                                  isPending ? 'text-zinc-400/40' : isCurrent ? 'text-[#ff4a1c]' : 'text-foreground'
                                 }`}
                               >
                                 <div className={`h-4.5 w-4.5 rounded-full flex items-center justify-center border text-[9px] ${
                                   isPending
                                     ? 'border-border/80'
                                     : isCurrent
-                                    ? 'border-brand-blue text-brand-blue animate-pulse'
+                                    ? 'border-brand-blue text-[#ff4a1c] animate-pulse'
                                     : 'bg-brand-blue border-brand-blue text-white'
                                 }`}>
                                   {!isPending && !isCurrent && <Check className="h-2.5 w-2.5" />}
@@ -580,7 +580,7 @@ export default function ReportIssue() {
                         </div>
                         <div>
                           <h3 className="font-bold text-sm">Analysis Failed</h3>
-                          <p className="text-xs text-muted-foreground mt-1 max-w-xs">{apiError}</p>
+                          <p className="text-xs text-zinc-400 mt-1 max-w-xs">{apiError}</p>
                         </div>
                         <Button variant="outline" size="sm" onClick={startAiAnalysis} className="mt-2 font-semibold">
                           Retry Analysis
@@ -591,13 +591,13 @@ export default function ReportIssue() {
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
                         {/* Image panel */}
                         <div className="flex flex-col gap-2">
-                          <label className="text-xs font-semibold text-muted-foreground">Uploaded Image</label>
+                          <label className="text-xs font-semibold text-zinc-400">Uploaded Image</label>
                           {previewUrl && (
                             <div className="rounded-xl overflow-hidden border border-border/80 aspect-video">
                               <Image src={previewUrl} alt="Reported problem" width={400} height={225} unoptimized className="w-full h-full object-cover" />
                             </div>
                           )}
-                          <div className="mt-3 p-3 rounded-lg border border-brand-blue/20 bg-brand-blue/5 text-[11px] font-semibold text-brand-blue flex items-center gap-2">
+                          <div className="mt-3 p-3 rounded-lg border border-[#ff4a1c]/20 bg-[#ff4a1c]/10 text-[11px] font-semibold text-[#ff4a1c] flex items-center gap-2">
                             <Brain className="h-4 w-4 shrink-0" />
                             <span>Gemini AI analyzed this with {aiData.confidence}% confidence</span>
                           </div>
@@ -607,14 +607,14 @@ export default function ReportIssue() {
                         <div className="flex flex-col gap-4">
                           {/* Category Choice */}
                           <div className="flex flex-col gap-1.5">
-                            <label htmlFor="category" className="text-xs font-semibold text-muted-foreground flex items-center gap-1">
-                              Detected Category <Edit2 className="h-3 w-3 text-muted-foreground" />
+                            <label htmlFor="category" className="text-xs font-semibold text-zinc-400 flex items-center gap-1">
+                              Detected Category <Edit2 className="h-3 w-3 text-zinc-400" />
                             </label>
                             <select
                               id="category"
                               value={aiData.category}
                               onChange={(e) => setAiData({ ...aiData, category: e.target.value })}
-                              className="w-full h-10 px-3 rounded-lg border border-border/80 bg-background/50 outline-hidden focus:border-brand-blue/50 text-sm font-semibold"
+                              className="w-full h-10 px-3 rounded-lg border border-border/80 bg-zinc-900/50 outline-hidden focus:border-[#ff4a1c]/50 focus:ring-1 focus:ring-[#ff4a1c]/30 text-white text-sm border-zinc-800 font-semibold"
                             >
                               <option value="Road Pothole">Road Pothole</option>
                               <option value="Broken Streetlight">Broken Streetlight</option>
@@ -628,13 +628,13 @@ export default function ReportIssue() {
                           {/* Severity & Department display */}
                           <div className="grid grid-cols-2 gap-4">
                             <div className="flex flex-col gap-1">
-                              <span className="text-xs font-semibold text-muted-foreground">AI Severity</span>
+                              <span className="text-xs font-semibold text-zinc-400">AI Severity</span>
                               <div>
                                 <SeverityBadge severity={aiData.severity} />
                               </div>
                             </div>
                             <div className="flex flex-col gap-1">
-                              <span className="text-xs font-semibold text-muted-foreground">Department</span>
+                              <span className="text-xs font-semibold text-zinc-400">Department</span>
                               <span className="text-xs font-bold text-foreground bg-muted/40 px-2 py-1 rounded-md border w-fit">
                                 {aiData.department}
                               </span>
@@ -643,7 +643,7 @@ export default function ReportIssue() {
 
                           {/* Description Textarea */}
                           <div className="flex flex-col gap-1.5">
-                            <label htmlFor="description" className="text-xs font-semibold text-muted-foreground">
+                            <label htmlFor="description" className="text-xs font-semibold text-zinc-400">
                               Suggested Description
                             </label>
                             <textarea
@@ -651,13 +651,13 @@ export default function ReportIssue() {
                               rows={3}
                               value={aiData.description}
                               onChange={(e) => setAiData({ ...aiData, description: e.target.value })}
-                              className="w-full p-3 rounded-lg border border-border/80 bg-background/50 outline-hidden focus:border-brand-blue/50 text-sm leading-relaxed resize-none"
+                              className="w-full p-3 rounded-lg border border-border/80 bg-zinc-900/50 outline-hidden focus:border-[#ff4a1c]/50 focus:ring-1 focus:ring-[#ff4a1c]/30 text-white text-sm border-zinc-800 leading-relaxed resize-none"
                             />
                           </div>
 
                           {/* Potential Risk */}
                           <div className="flex flex-col gap-1">
-                            <span className="text-xs font-semibold text-muted-foreground flex items-center gap-1">
+                            <span className="text-xs font-semibold text-zinc-400 flex items-center gap-1">
                               Safety Risk Assessment
                             </span>
                             <p className="text-xs text-foreground font-semibold flex items-start gap-1.5">
@@ -669,12 +669,12 @@ export default function ReportIssue() {
                       </div>
                     )}
                   </CardContent>
-                  <CardFooter className="justify-between border-t border-border/40 py-4 bg-muted/20 rounded-b-xl gap-3">
+                  <CardFooter className="justify-between border-t border-zinc-800 py-4 bg-zinc-900/30 rounded-b-xl gap-3">
                     <Button variant="outline" size="sm" onClick={handleBack} disabled={aiProcessing} className="font-semibold cursor-pointer">
                       <ChevronLeft className="h-4 w-4 mr-1" />
                       Back
                     </Button>
-                    <Button variant="default" onClick={handleNext} disabled={aiProcessing} className="bg-brand-blue hover:bg-brand-blue/90 text-white font-semibold shadow-xs cursor-pointer">
+                    <Button variant="default" onClick={handleNext} disabled={aiProcessing} className="bg-[#ff4a1c] hover:bg-[#ff4a1c]/90 text-white font-bold shadow-lg shadow-[#ff4a1c]/20 border-none cursor-pointer">
                       Next Step
                       <ChevronRight className="h-4 w-4 ml-1" />
                     </Button>
@@ -684,7 +684,7 @@ export default function ReportIssue() {
 
               {/* STEP 3: LOCATION */}
               {currentStep === 3 && (
-                <Card hoverEffect={false} className="border-border/60 shadow-lg flex-1 flex flex-col justify-between">
+                <Card hoverEffect={false} className="border-zinc-800 bg-[#121212] shadow-2xl flex-1 flex flex-col justify-between">
                   <CardHeader>
                     <CardTitle>Specify Issue Location</CardTitle>
                     <CardDescription>
@@ -726,7 +726,7 @@ export default function ReportIssue() {
                         {/* Fields */}
                         <div className="flex flex-col gap-3">
                           <div className="flex flex-col gap-1.5">
-                            <label htmlFor="address" className="text-xs font-semibold text-muted-foreground">
+                            <label htmlFor="address" className="text-xs font-semibold text-zinc-400">
                               Street Address
                             </label>
                             <input
@@ -736,12 +736,12 @@ export default function ReportIssue() {
                               value={address}
                               onChange={(e) => setAddress(e.target.value)}
                               disabled={locationLoading}
-                              className="w-full h-10 px-3 rounded-lg border border-border/80 bg-background/50 outline-hidden focus:border-brand-blue/50 text-sm"
+                              className="w-full h-10 px-3 rounded-lg border border-border/80 bg-zinc-900/50 outline-hidden focus:border-[#ff4a1c]/50 focus:ring-1 focus:ring-[#ff4a1c]/30 text-white text-sm border-zinc-800"
                             />
                           </div>
 
                           <div className="flex flex-col gap-1.5">
-                            <label htmlFor="landmark" className="text-xs font-semibold text-muted-foreground">
+                            <label htmlFor="landmark" className="text-xs font-semibold text-zinc-400">
                               Landmark (Optional)
                             </label>
                             <input
@@ -751,13 +751,13 @@ export default function ReportIssue() {
                               value={landmark}
                               onChange={(e) => setLandmark(e.target.value)}
                               disabled={locationLoading}
-                              className="w-full h-10 px-3 rounded-lg border border-border/80 bg-background/50 outline-hidden focus:border-brand-blue/50 text-sm"
+                              className="w-full h-10 px-3 rounded-lg border border-border/80 bg-zinc-900/50 outline-hidden focus:border-[#ff4a1c]/50 focus:ring-1 focus:ring-[#ff4a1c]/30 text-white text-sm border-zinc-800"
                             />
                           </div>
 
                           <div className="grid grid-cols-2 gap-4">
                             <div className="flex flex-col gap-1.5">
-                              <label htmlFor="city" className="text-xs font-semibold text-muted-foreground">
+                              <label htmlFor="city" className="text-xs font-semibold text-zinc-400">
                                 City
                               </label>
                               <input
@@ -767,11 +767,11 @@ export default function ReportIssue() {
                                 value={city}
                                 onChange={(e) => setCity(e.target.value)}
                                 disabled={locationLoading}
-                                className="w-full h-10 px-3 rounded-lg border border-border/80 bg-background/50 outline-hidden focus:border-brand-blue/50 text-sm"
+                                className="w-full h-10 px-3 rounded-lg border border-border/80 bg-zinc-900/50 outline-hidden focus:border-[#ff4a1c]/50 focus:ring-1 focus:ring-[#ff4a1c]/30 text-white text-sm border-zinc-800"
                               />
                             </div>
                             <div className="flex flex-col gap-1.5">
-                              <label htmlFor="state" className="text-xs font-semibold text-muted-foreground">
+                              <label htmlFor="state" className="text-xs font-semibold text-zinc-400">
                                 State
                               </label>
                               <input
@@ -781,7 +781,7 @@ export default function ReportIssue() {
                                 value={stateName}
                                 onChange={(e) => setStateName(e.target.value)}
                                 disabled={locationLoading}
-                                className="w-full h-10 px-3 rounded-lg border border-border/80 bg-background/50 outline-hidden focus:border-brand-blue/50 text-sm"
+                                className="w-full h-10 px-3 rounded-lg border border-border/80 bg-zinc-900/50 outline-hidden focus:border-[#ff4a1c]/50 focus:ring-1 focus:ring-[#ff4a1c]/30 text-white text-sm border-zinc-800"
                               />
                             </div>
                           </div>
@@ -790,24 +790,24 @@ export default function ReportIssue() {
 
                       {/* Right: Map Graphic / Coordinates Preview */}
                       <div className="flex flex-col gap-3 h-full">
-                        <label className="text-xs font-semibold text-muted-foreground">Location Pin Preview</label>
-                        <div className="flex-1 min-h-[220px] rounded-xl overflow-hidden border border-border/80 bg-zinc-100 dark:bg-zinc-950/20 relative flex flex-col justify-center items-center text-center p-4">
+                        <label className="text-xs font-semibold text-zinc-400">Location Pin Preview</label>
+                        <div className="flex-1 min-h-[220px] rounded-xl overflow-hidden border border-border/80 bg-zinc-950/50 relative flex flex-col justify-center items-center text-center p-4">
                           
                           {/* Grid background */}
                           <div className="absolute inset-0 bg-[linear-gradient(to_right,oklch(0.92_0.01_250_/_10%)_1px,transparent_1px),linear-gradient(to_bottom,oklch(0.92_0.01_250_/_10%)_1px,transparent_1px)] dark:bg-[linear-gradient(to_right,oklch(0.22_0.03_250_/_10%)_1px,transparent_1px),linear-gradient(to_bottom,oklch(0.22_0.03_250_/_10%)_1px,transparent_1px)] bg-[size:1.5rem_1.5rem]" />
                           
                           <div className="relative">
-                            <MapPin className="h-10 w-10 text-brand-blue animate-bounce relative z-10" />
+                            <MapPin className="h-10 w-10 text-[#ff4a1c] animate-bounce relative z-10" />
                             <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 h-2.5 w-6 bg-black/20 rounded-full blur-xs" />
                           </div>
 
                           <h4 className="font-bold text-xs mt-3 relative z-10">Map Pin Fixed</h4>
                           {coords ? (
-                            <p className="text-[10px] text-brand-blue font-mono mt-1 relative z-10 bg-brand-blue/5 border border-brand-blue/20 px-2 py-0.5 rounded-full">
+                            <p className="text-[10px] text-[#ff4a1c] font-mono mt-1 relative z-10 bg-[#ff4a1c]/10 border border-[#ff4a1c]/20 px-2 py-0.5 rounded-full">
                               Latitude: {coords.lat.toFixed(5)}, Longitude: {coords.lng.toFixed(5)}
                             </p>
                           ) : (
-                            <p className="text-[10px] text-muted-foreground mt-1 relative z-10">
+                            <p className="text-[10px] text-zinc-400 mt-1 relative z-10">
                               Manual address mode. Custom coordinates will be resolved in background.
                             </p>
                           )}
@@ -816,12 +816,12 @@ export default function ReportIssue() {
 
                     </div>
                   </CardContent>
-                  <CardFooter className="justify-between border-t border-border/40 py-4 bg-muted/20 rounded-b-xl gap-3">
+                  <CardFooter className="justify-between border-t border-zinc-800 py-4 bg-zinc-900/30 rounded-b-xl gap-3">
                     <Button variant="outline" size="sm" onClick={handleBack} className="font-semibold cursor-pointer">
                       <ChevronLeft className="h-4 w-4 mr-1" />
                       Back
                     </Button>
-                    <Button variant="default" onClick={handleNext} className="bg-brand-blue hover:bg-brand-blue/90 text-white font-semibold shadow-xs cursor-pointer">
+                    <Button variant="default" onClick={handleNext} className="bg-[#ff4a1c] hover:bg-[#ff4a1c]/90 text-white font-bold shadow-lg shadow-[#ff4a1c]/20 border-none cursor-pointer">
                       Next Step
                       <ChevronRight className="h-4 w-4 ml-1" />
                     </Button>
@@ -831,7 +831,7 @@ export default function ReportIssue() {
 
               {/* STEP 4: REVIEW SUMMARY */}
               {currentStep === 4 && (
-                <Card hoverEffect={false} className="border-border/60 shadow-lg flex-1 flex flex-col justify-between">
+                <Card hoverEffect={false} className="border-zinc-800 bg-[#121212] shadow-2xl flex-1 flex flex-col justify-between">
                   <CardHeader>
                     <CardTitle>Review Your Report</CardTitle>
                     <CardDescription>
@@ -843,7 +843,7 @@ export default function ReportIssue() {
                       
                       {/* Image Preview Left */}
                       <div className="md:col-span-1 flex flex-col gap-2">
-                        <span className="text-xs font-semibold text-muted-foreground">Selected Photo</span>
+                        <span className="text-xs font-semibold text-zinc-400">Selected Photo</span>
                         {previewUrl && (
                           <div className="rounded-xl overflow-hidden border border-border/80 aspect-square">
                             <Image src={previewUrl} alt="Reported issue summary" width={400} height={400} unoptimized className="w-full h-full object-cover" />
@@ -861,32 +861,32 @@ export default function ReportIssue() {
                       </div>
 
                       {/* Issue Details Center */}
-                      <div className="md:col-span-1 flex flex-col gap-4 border-r border-border/40 pr-4">
+                      <div className="md:col-span-1 flex flex-col gap-4 border-r border-zinc-800 pr-4">
                         <div className="flex flex-col gap-1">
-                          <span className="text-xs font-semibold text-muted-foreground flex items-center justify-between">
+                          <span className="text-xs font-semibold text-zinc-400 flex items-center justify-between">
                             Issue Info
-                            <button onClick={() => setCurrentStep(2)} className="text-brand-blue text-[10px] font-bold hover:underline">
+                            <button onClick={() => setCurrentStep(2)} className="text-[#ff4a1c] text-[10px] font-bold hover:underline">
                               Edit
                             </button>
                           </span>
                           <span className="text-sm font-bold text-foreground">{aiData.category}</span>
                           <div className="flex gap-2 items-center mt-1">
                             <SeverityBadge severity={aiData.severity} />
-                            <span className="text-[10px] text-muted-foreground font-semibold bg-muted/40 px-2 py-0.5 rounded-md border">
+                            <span className="text-[10px] text-zinc-400 font-semibold bg-muted/40 px-2 py-0.5 rounded-md border">
                               {aiData.confidence}% Confidence
                             </span>
                           </div>
                         </div>
 
                         <div className="flex flex-col gap-1">
-                          <span className="text-xs font-semibold text-muted-foreground">Description</span>
-                          <p className="text-xs text-muted-foreground leading-relaxed bg-zinc-50 dark:bg-zinc-950/20 p-2.5 rounded-lg border border-border/40">
+                          <span className="text-xs font-semibold text-zinc-400">Description</span>
+                          <p className="text-xs text-zinc-400 leading-relaxed bg-zinc-50 dark:bg-zinc-950/20 p-2.5 rounded-lg border border-zinc-800">
                             {aiData.description}
                           </p>
                         </div>
 
                         <div className="flex flex-col gap-1">
-                          <span className="text-xs font-semibold text-muted-foreground">Assigned Department</span>
+                          <span className="text-xs font-semibold text-zinc-400">Assigned Department</span>
                           <span className="text-xs font-semibold text-foreground bg-muted/40 border px-2 py-1 rounded-md w-fit">
                             {aiData.department}
                           </span>
@@ -896,25 +896,25 @@ export default function ReportIssue() {
                       {/* Location Details Right */}
                       <div className="md:col-span-1 flex flex-col gap-4">
                         <div className="flex flex-col gap-1">
-                          <span className="text-xs font-semibold text-muted-foreground flex items-center justify-between">
+                          <span className="text-xs font-semibold text-zinc-400 flex items-center justify-between">
                             Report Location
-                            <button onClick={() => setCurrentStep(3)} className="text-brand-blue text-[10px] font-bold hover:underline">
+                            <button onClick={() => setCurrentStep(3)} className="text-[#ff4a1c] text-[10px] font-bold hover:underline">
                               Edit
                             </button>
                           </span>
                           <div className="flex items-start gap-1.5 mt-1 text-xs text-foreground font-semibold">
-                            <MapPin className="h-4.5 w-4.5 shrink-0 text-brand-blue mt-0.5" />
+                            <MapPin className="h-4.5 w-4.5 shrink-0 text-[#ff4a1c] mt-0.5" />
                             <div>
                               <p>{address}</p>
-                              {landmark && <p className="text-muted-foreground text-[10px] font-normal">{landmark}</p>}
-                              <p className="text-muted-foreground text-[10px] font-normal">{city}, {stateName}</p>
+                              {landmark && <p className="text-zinc-400 text-[10px] font-normal">{landmark}</p>}
+                              <p className="text-zinc-400 text-[10px] font-normal">{city}, {stateName}</p>
                             </div>
                           </div>
                         </div>
 
                         {coords && (
-                          <div className="p-3 rounded-lg border border-border/40 bg-zinc-50/50 dark:bg-zinc-950/10 flex flex-col gap-1">
-                            <span className="text-[10px] font-bold text-muted-foreground">GPS Location Fixed</span>
+                          <div className="p-3 rounded-lg border border-zinc-800 bg-zinc-50/50 dark:bg-zinc-950/10 flex flex-col gap-1">
+                            <span className="text-[10px] font-bold text-zinc-400">GPS Location Fixed</span>
                             <span className="text-[10px] font-mono text-foreground font-semibold">
                               Lat: {coords.lat.toFixed(6)}, Lng: {coords.lng.toFixed(6)}
                             </span>
@@ -924,13 +924,13 @@ export default function ReportIssue() {
 
                     </div>
                   </CardContent>
-                  <CardFooter className="flex-col border-t border-border/40 py-4 bg-muted/20 rounded-b-xl gap-3">
+                  <CardFooter className="flex-col border-t border-zinc-800 py-4 bg-zinc-900/30 rounded-b-xl gap-3">
                     <div className="flex justify-between w-full">
                       <Button variant="outline" size="sm" onClick={handleBack} disabled={submitting} className="font-semibold cursor-pointer">
                         <ChevronLeft className="h-4 w-4 mr-1" />
                         Back
                       </Button>
-                      <Button variant="default" onClick={handleNext} disabled={submitting} className="bg-brand-blue hover:bg-brand-blue/90 text-white font-semibold shadow-xs cursor-pointer">
+                      <Button variant="default" onClick={handleNext} disabled={submitting} className="bg-[#ff4a1c] hover:bg-[#ff4a1c]/90 text-white font-bold shadow-lg shadow-[#ff4a1c]/20 border-none cursor-pointer">
                         {submitting ? 'Submitting...' : 'Submit Report'}
                         {!submitting && <ChevronRight className="h-4 w-4 ml-1" />}
                       </Button>
@@ -953,17 +953,17 @@ export default function ReportIssue() {
                   </div>
                   
                   <h2 className="text-xl font-bold tracking-tight text-foreground text-center">Possible Existing Issue Found</h2>
-                  <p className="text-sm text-muted-foreground mt-2 max-w-sm text-center">
+                  <p className="text-sm text-zinc-400 mt-2 max-w-sm text-center">
                     We found a similar issue reported nearby. Please check if this matches your report to avoid creating duplicates.
                   </p>
 
                   <div className="w-full mt-6 bg-background rounded-xl p-4 border border-border/80 shadow-xs flex flex-col sm:flex-row gap-4 items-center sm:items-start text-left">
                     {potentialDuplicate.existingIssue.imageUrl ? (
-                      <div className="h-24 w-24 shrink-0 relative rounded-lg overflow-hidden border border-border/40">
+                      <div className="h-24 w-24 shrink-0 relative rounded-lg overflow-hidden border border-zinc-800">
                         <Image src={potentialDuplicate.existingIssue.imageUrl} alt="Existing" fill className="object-cover" />
                       </div>
                     ) : (
-                      <div className="h-24 w-24 shrink-0 relative rounded-lg border border-border/40 bg-muted flex items-center justify-center text-muted-foreground">
+                      <div className="h-24 w-24 shrink-0 relative rounded-lg border border-zinc-800 bg-muted flex items-center justify-center text-zinc-400">
                         <FileText className="h-8 w-8 opacity-20" />
                       </div>
                     )}
@@ -974,14 +974,14 @@ export default function ReportIssue() {
                         <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800">
                           {potentialDuplicate.probability}% Match
                         </span>
-                        <span className="text-[10px] text-muted-foreground font-semibold bg-muted px-2 py-0.5 rounded-md border border-border/60">
+                        <span className="text-[10px] text-zinc-400 font-semibold bg-muted px-2 py-0.5 rounded-md border border-border/60">
                           {potentialDuplicate.distance}m away
                         </span>
-                        <span className="text-[10px] text-muted-foreground font-semibold bg-muted px-2 py-0.5 rounded-md border border-border/60">
+                        <span className="text-[10px] text-zinc-400 font-semibold bg-muted px-2 py-0.5 rounded-md border border-border/60">
                           {potentialDuplicate.existingIssue.status}
                         </span>
                       </div>
-                      <p className="text-xs text-muted-foreground line-clamp-2 mt-1">
+                      <p className="text-xs text-zinc-400 line-clamp-2 mt-1">
                         {potentialDuplicate.existingIssue.description}
                       </p>
                     </div>
@@ -991,7 +991,7 @@ export default function ReportIssue() {
                     <Button variant="default" onClick={confirmExistingIssue} disabled={submitting} className="flex-1 bg-brand-blue hover:bg-brand-blue/90 text-white font-semibold">
                       {submitting ? 'Confirming...' : 'Confirm Existing Issue'}
                     </Button>
-                    <Button variant="outline" onClick={submitIssue} disabled={submitting} className="flex-1 font-semibold text-muted-foreground hover:text-foreground">
+                    <Button variant="outline" onClick={submitIssue} disabled={submitting} className="flex-1 font-semibold text-zinc-400 hover:text-foreground">
                       {submitting ? 'Submitting...' : 'Submit New Issue'}
                     </Button>
                   </div>
@@ -1012,19 +1012,19 @@ export default function ReportIssue() {
                   </div>
                   
                   <h2 className="text-2xl font-bold tracking-tight text-foreground">Report Submitted Successfully!</h2>
-                  <p className="text-muted-foreground text-sm max-w-md mt-2 leading-relaxed">
+                  <p className="text-zinc-400 text-sm max-w-md mt-2 leading-relaxed">
                     Your civic issue is ready to be reported. Local authorities and fellow citizens will now be able to view, support, and track repairs.
                   </p>
 
-                  <div className="mt-6 p-4 rounded-xl border border-brand-blue/20 bg-brand-blue/5 flex flex-col items-center max-w-xs w-full">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-brand-blue">Reference Ticket ID</span>
+                  <div className="mt-6 p-4 rounded-xl border border-[#ff4a1c]/20 bg-[#ff4a1c]/10 flex flex-col items-center max-w-xs w-full">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-[#ff4a1c]">Reference Ticket ID</span>
                     <span className="text-lg font-mono font-black text-foreground mt-1">{submittedId ? submittedId.substring(0, 8).toUpperCase() : 'CIV-DEMO-001'}</span>
                   </div>
 
                   {submittedId && (
                     <div className="mt-4 flex flex-col items-center gap-1">
-                      <span className="text-xs text-muted-foreground font-semibold">Status: <span className="text-brand-blue">Open</span></span>
-                      <span className="text-xs text-muted-foreground font-semibold">Location: {address}</span>
+                      <span className="text-xs text-zinc-400 font-semibold">Status: <span className="text-[#ff4a1c]">Open</span></span>
+                      <span className="text-xs text-zinc-400 font-semibold">Location: {address}</span>
                     </div>
                   )}
 
@@ -1039,7 +1039,7 @@ export default function ReportIssue() {
                     <Button
                       variant="default"
                       onClick={resetForm}
-                      className="flex-1 bg-brand-blue hover:bg-brand-blue/90 text-white font-semibold shadow-xs cursor-pointer"
+                      className="flex-1 bg-[#ff4a1c] hover:bg-[#ff4a1c]/90 text-white font-bold shadow-lg shadow-[#ff4a1c]/20 border-none cursor-pointer"
                     >
                       Report Another
                     </Button>

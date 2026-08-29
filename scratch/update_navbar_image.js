@@ -1,4 +1,9 @@
-'use client';
+const fs = require('fs');
+const path = require('path');
+
+const filePath = path.join(__dirname, '../components/layout/Navbar.tsx');
+
+const content = `'use client';
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
@@ -84,9 +89,9 @@ export function Navbar() {
                   <Link
                     key={link.name}
                     href={link.href}
-                    className={`flex items-center gap-2 text-sm transition-colors ${
+                    className={\`flex items-center gap-2 text-sm transition-colors \${
                       isActive ? 'text-white font-bold' : 'text-zinc-400 font-medium hover:text-white'
-                    }`}
+                    }\`}
                   >
                     <Icon className="h-4 w-4" />
                     {link.name}
@@ -182,9 +187,9 @@ export function Navbar() {
                     key={link.name}
                     href={link.href}
                     onClick={() => setIsOpen(false)}
-                    className={`flex items-center gap-3 rounded-md px-3 py-3 text-base font-medium transition-all ${
+                    className={\`flex items-center gap-3 rounded-md px-3 py-3 text-base font-medium transition-all \${
                       isActive ? 'bg-white/10 text-white' : 'text-zinc-400 hover:bg-white/5 hover:text-white'
-                    }`}
+                    }\`}
                   >
                     <Icon className="h-5 w-5" />
                     {link.name}
@@ -233,3 +238,7 @@ export function Navbar() {
     </header>
   );
 }
+`;
+
+fs.writeFileSync(filePath, content, 'utf8');
+console.log('Navbar successfully updated to match the image exact style.');

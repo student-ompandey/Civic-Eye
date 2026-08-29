@@ -121,16 +121,16 @@ export default function Register() {
           {/* Back button */}
           <Link
             href="/"
-            className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors w-fit"
+            className="inline-flex items-center gap-1 text-sm font-semibold tracking-wide text-zinc-400 hover:text-white transition-colors w-fit"
           >
             <ArrowLeft className="h-4 w-4" />
             Back to homepage
           </Link>
 
-          <Card className="border-border/60 bg-background/80 backdrop-blur-md shadow-xl">
+          <Card className="border-zinc-800 bg-[#0a0a0a]/90 backdrop-blur-xl shadow-2xl">
             <CardHeader className="text-center pb-4">
-              <CardTitle className="text-2xl font-bold tracking-tight">Create an Account</CardTitle>
-              <CardDescription>Join citizens reporting local issues to improve our city</CardDescription>
+              <CardTitle className="text-3xl font-bold tracking-tighter text-white">Create an Account</CardTitle>
+              <CardDescription className="text-zinc-400">Join citizens reporting local issues to improve our city</CardDescription>
             </CardHeader>
 
             <CardContent>
@@ -154,7 +154,7 @@ export default function Register() {
 
                 {/* Full Name Field */}
                 <div className="flex flex-col gap-1.5">
-                  <label htmlFor="name" className="text-xs font-semibold text-muted-foreground">
+                  <label htmlFor="name" className="text-xs font-semibold tracking-wide text-zinc-400">
                     Full Name
                   </label>
                   <input
@@ -164,8 +164,8 @@ export default function Register() {
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
                     disabled={loading}
-                    className={`w-full h-10 px-3 rounded-lg border bg-background/50 outline-hidden transition-all text-sm ${
-                      nameError ? 'border-red-500 focus:border-red-500' : 'border-border/80 focus:border-brand-blue/50'
+                    className={`w-full h-10 px-3 rounded-lg border bg-zinc-900/50 text-white outline-hidden transition-all text-sm ${
+                      nameError ? 'border-red-500/50 focus:border-red-500 focus:ring-1 focus:ring-red-500' : 'border-zinc-800 focus:border-[#ff4a1c]/50 focus:ring-1 focus:ring-[#ff4a1c]/30'
                     }`}
                   />
                   {nameError && <span className="text-[10px] text-red-500 font-semibold mt-0.5">{nameError}</span>}
@@ -173,7 +173,7 @@ export default function Register() {
 
                 {/* Email Field */}
                 <div className="flex flex-col gap-1.5">
-                  <label htmlFor="email" className="text-xs font-semibold text-muted-foreground">
+                  <label htmlFor="email" className="text-xs font-semibold tracking-wide text-zinc-400">
                     Email Address
                   </label>
                   <input
@@ -183,8 +183,8 @@ export default function Register() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     disabled={loading}
-                    className={`w-full h-10 px-3 rounded-lg border bg-background/50 outline-hidden transition-all text-sm ${
-                      emailError ? 'border-red-500 focus:border-red-500' : 'border-border/80 focus:border-brand-blue/50'
+                    className={`w-full h-10 px-3 rounded-lg border bg-zinc-900/50 text-white outline-hidden transition-all text-sm ${
+                      emailError ? 'border-red-500/50 focus:border-red-500 focus:ring-1 focus:ring-red-500' : 'border-zinc-800 focus:border-[#ff4a1c]/50 focus:ring-1 focus:ring-[#ff4a1c]/30'
                     }`}
                   />
                   {emailError && <span className="text-[10px] text-red-500 font-semibold mt-0.5">{emailError}</span>}
@@ -192,7 +192,7 @@ export default function Register() {
 
                 {/* Password Field */}
                 <div className="flex flex-col gap-1.5">
-                  <label htmlFor="password" className="text-xs font-semibold text-muted-foreground">
+                  <label htmlFor="password" className="text-xs font-semibold tracking-wide text-zinc-400">
                     Password
                   </label>
                   <div className="relative">
@@ -203,15 +203,15 @@ export default function Register() {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       disabled={loading}
-                      className={`w-full h-10 pl-3 pr-10 rounded-lg border bg-background/50 outline-hidden transition-all text-sm ${
-                        passwordError ? 'border-red-500 focus:border-red-500' : 'border-border/80 focus:border-brand-blue/50'
+                      className={`w-full h-10 pl-3 pr-10 rounded-lg border bg-zinc-900/50 text-white outline-hidden transition-all text-sm ${
+                        passwordError ? 'border-red-500/50 focus:border-red-500 focus:ring-1 focus:ring-red-500' : 'border-zinc-800 focus:border-[#ff4a1c]/50 focus:ring-1 focus:ring-[#ff4a1c]/30'
                       }`}
                     />
                     <button
                       type="button"
                       disabled={loading}
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground cursor-pointer transition-colors"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 tracking-wide text-zinc-400 hover:text-foreground cursor-pointer transition-colors"
                     >
                       {showPassword ? <EyeOff className="h-4.5 w-4.5" /> : <Eye className="h-4.5 w-4.5" />}
                     </button>
@@ -221,7 +221,7 @@ export default function Register() {
 
                 {/* Confirm Password Field */}
                 <div className="flex flex-col gap-1.5">
-                  <label htmlFor="confirmPassword" className="text-xs font-semibold text-muted-foreground">
+                  <label htmlFor="confirmPassword" className="text-xs font-semibold tracking-wide text-zinc-400">
                     Confirm Password
                   </label>
                   <input
@@ -231,25 +231,25 @@ export default function Register() {
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     disabled={loading}
-                    className={`w-full h-10 px-3 rounded-lg border bg-background/50 outline-hidden transition-all text-sm ${
-                      confirmPasswordError ? 'border-red-500 focus:border-red-500' : 'border-border/80 focus:border-brand-blue/50'
+                    className={`w-full h-10 px-3 rounded-lg border bg-zinc-900/50 text-white outline-hidden transition-all text-sm ${
+                      confirmPasswordError ? 'border-red-500/50 focus:border-red-500 focus:ring-1 focus:ring-red-500' : 'border-zinc-800 focus:border-[#ff4a1c]/50 focus:ring-1 focus:ring-[#ff4a1c]/30'
                     }`}
                   />
                   {confirmPasswordError && <span className="text-[10px] text-red-500 font-semibold mt-0.5">{confirmPasswordError}</span>}
                 </div>
 
                 {/* Register Button */}
-                <Button type="submit" loading={loading} className="w-full bg-brand-blue hover:bg-brand-blue/90 text-white font-semibold shadow-xs mt-2">
+                <Button type="submit" loading={loading} className="w-full bg-[#ff4a1c] hover:bg-[#ff4a1c]/90 text-white font-bold shadow-lg shadow-[#ff4a1c]/20 border-none mt-2">
                   Create Account
                 </Button>
 
               </form>
             </CardContent>
 
-            <CardFooter className="justify-center border-t border-border/40 py-4 bg-muted/20 rounded-b-xl">
-              <p className="text-xs text-muted-foreground">
+            <CardFooter className="justify-center border-t border-zinc-800 py-4 bg-zinc-900/30 rounded-b-xl">
+              <p className="text-xs tracking-wide text-zinc-400">
                 Already have an account?{' '}
-                <Link href="/login" className="text-brand-blue font-semibold hover:underline">
+                <Link href="/login" className="text-[#ff4a1c] font-bold tracking-wide hover:underline">
                   Sign In
                 </Link>
               </p>
