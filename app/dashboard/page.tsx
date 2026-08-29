@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import {
@@ -14,27 +15,37 @@ import {
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { PageContainer } from '@/components/shared/PageContainer';
-import { createClient } from '@/lib/supabase/client';
-import { User } from '@supabase/supabase-js';
+
+interface User {
+  id: string;
+  email: string;
+  name: string;
+}
 
 export default function Dashboard() {
   const router = useRouter();
-  const supabase = createClient();
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const getUserSession = async () => {
-      const { data: { user: currentUser } } = await supabase.auth.getUser();
-      if (!currentUser) {
+      try {
+        const res = await fetch('/api/auth/session');
+        const data = await res.json();
+        if (!data.user) {
+          router.push('/login');
+        } else {
+          setUser(data.user);
+        }
+      } catch (err) {
+        console.error('Error fetching session:', err);
         router.push('/login');
-      } else {
-        setUser(currentUser);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
     getUserSession();
-  }, [router, supabase]);
+  }, [router]);
 
   if (loading) {
     return (
@@ -60,10 +71,12 @@ export default function Dashboard() {
             Welcome back, <span className="font-semibold text-foreground">{user.email}</span>. Monitor and report issues in your neighborhood.
           </p>
         </div>
-        <Button className="bg-brand-blue hover:bg-brand-blue/90 text-white font-semibold shadow-xs shrink-0 cursor-pointer">
-          <Plus className="h-4.5 w-4.5 mr-1" />
-          Report New Issue
-        </Button>
+        <Link href="/report">
+          <Button className="bg-brand-blue hover:bg-brand-blue/90 text-white font-semibold shadow-xs shrink-0 cursor-pointer">
+            <Plus className="h-4.5 w-4.5 mr-1" />
+            Report New Issue
+          </Button>
+        </Link>
       </motion.div>
 
       {/* Metrics Row */}

@@ -7,45 +7,37 @@ import { Menu, X, Eye, AlertTriangle, User as UserIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { PageContainer } from '@/components/shared/PageContainer';
 import { AnimatePresence, motion } from 'framer-motion';
-import { createClient } from '@/lib/supabase/client';
-import { User } from '@supabase/supabase-js';
+interface User {
+  id: string;
+  email: string;
+  name: string;
+}
 
 export function Navbar() {
   const router = useRouter();
-  const supabase = createClient();
   const [isOpen, setIsOpen] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check initial session
-    const getInitialSession = async () => {
+    const fetchSession = async () => {
       try {
-        const { data: { user: initialUser } } = await supabase.auth.getUser();
-        setUser(initialUser);
+        const res = await fetch('/api/auth/session');
+        const data = await res.json();
+        setUser(data.user);
       } catch (err) {
-        console.error('Error fetching user session:', err);
+        console.error('Error fetching session:', err);
       } finally {
         setLoading(false);
       }
     };
-
-    getInitialSession();
-
-    // Subscribe to auth state changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
-      setLoading(false);
-    });
-
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, [supabase]);
+    fetchSession();
+  }, []);
 
   const handleSignOut = async () => {
     try {
-      await supabase.auth.signOut();
+      await fetch('/api/auth/logout', { method: 'POST' });
+      setUser(null);
       router.push('/');
       router.refresh();
     } catch (err) {
@@ -105,7 +97,7 @@ export function Navbar() {
                     <Button variant="ghost" size="sm" onClick={handleSignOut} className="font-semibold cursor-pointer">
                       Sign Out
                     </Button>
-                    <Link href="/dashboard">
+                    <Link href="/report">
                       <Button variant="default" size="sm" className="bg-brand-blue hover:bg-brand-blue/90 text-white shadow-sm font-semibold cursor-pointer">
                         <AlertTriangle className="h-4 w-4 mr-1.5" />
                         Report Issue
@@ -179,7 +171,7 @@ export function Navbar() {
                       <Button variant="outline" onClick={() => { setIsOpen(false); handleSignOut(); }} className="w-full justify-center cursor-pointer">
                         Sign Out
                       </Button>
-                      <Link href="/dashboard" onClick={() => setIsOpen(false)} className="w-full">
+                      <Link href="/report" onClick={() => setIsOpen(false)} className="w-full">
                         <Button className="w-full bg-brand-blue hover:bg-brand-blue/90 text-white justify-center cursor-pointer">
                           <AlertTriangle className="h-4 w-4 mr-1.5" />
                           Report Issue

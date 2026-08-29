@@ -8,11 +8,8 @@ import { Eye, EyeOff, ShieldAlert, CheckCircle2, ArrowLeft } from 'lucide-react'
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { PageContainer } from '@/components/shared/PageContainer';
-import { createClient } from '@/lib/supabase/client';
-
 export default function Login() {
   const router = useRouter();
-  const supabase = createClient();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -59,17 +56,18 @@ export default function Login() {
     setLoading(true);
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
       });
 
-      if (error) {
-        if (error.message.includes('Invalid login credentials')) {
-          setErrorMsg('Invalid email or password. Please try again.');
-        } else {
-          setErrorMsg(error.message);
-        }
+      const data = await res.json();
+
+      if (!res.ok) {
+        setErrorMsg(data.error || 'Invalid email or password. Please try again.');
       } else {
         setSuccessMsg('Logged in successfully! Redirecting...');
         // Refresh router context and redirect
@@ -79,8 +77,7 @@ export default function Login() {
         }, 1000);
       }
     } catch (err: unknown) {
-      const error = err as Error;
-      setErrorMsg(error.message || 'An unexpected error occurred. Please check your network connection.');
+      setErrorMsg('An unexpected error occurred. Please check your network connection.');
     } finally {
       setLoading(false);
     }

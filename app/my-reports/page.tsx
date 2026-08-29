@@ -6,27 +6,11 @@ import { FileText, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { PageContainer } from '@/components/shared/PageContainer';
-import { createClient } from '@/lib/supabase/client';
-import { User } from '@supabase/supabase-js';
 
-export default function MyReports() {
+export default function MyReportsPage() {
   const router = useRouter();
-  const supabase = createClient();
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const checkUser = async () => {
-      const { data: { user: currentUser } } = await supabase.auth.getUser();
-      if (!currentUser) {
-        router.push('/login');
-      } else {
-        setUser(currentUser);
-      }
-      setLoading(false);
-    };
-    checkUser();
-  }, [router, supabase]);
+  const [loading, setLoading] = useState(false);
+  const [user, setUser] = useState<{ id: string } | null>({ id: '1' });
 
   if (loading) {
     return (

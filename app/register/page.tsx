@@ -8,11 +8,8 @@ import { Eye, EyeOff, ShieldAlert, CheckCircle2, ArrowLeft } from 'lucide-react'
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { PageContainer } from '@/components/shared/PageContainer';
-import { createClient } from '@/lib/supabase/client';
-
 export default function Register() {
   const router = useRouter();
-  const supabase = createClient();
 
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
@@ -79,65 +76,31 @@ export default function Register() {
     setLoading(true);
 
     try {
-      // 1. Sign up with Supabase Auth
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-      });
-
-      if (error) {
-        if (error.message.includes('User already registered')) {
-          setErrorMsg('An account with this email already exists. Please login.');
-        } else {
-          setErrorMsg(error.message);
-        }
-        setLoading(false);
-        return;
-      }
-
-      const user = data?.user;
-
-      if (!user) {
-        setErrorMsg('Sign up failed. Please try again.');
-        setLoading(false);
-        return;
-      }
-
-      // 2. Call API Route to create profile in MongoDB
-      const res = await fetch('/api/auth/profile', {
+      const res = await fetch('/api/auth/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          id: user.id,
-          full_name: fullName,
+          fullName,
+          email,
+          password,
         }),
       });
 
-      if (!res.ok) {
-        const errorData = await res.json();
-        console.error('Failed to create user profile in MongoDB:', errorData);
-        // We still show warning but don't fail completely as auth was successful.
-      }
+      const data = await res.json();
 
-      // 3. Show success messaging
-      if (data?.session) {
+      if (!res.ok) {
+        setErrorMsg(data.error || 'Registration failed. Please try again.');
+      } else {
         setSuccessMsg('Account created successfully! Logging you in...');
         router.refresh();
         setTimeout(() => {
           router.push('/dashboard');
         }, 1500);
-      } else {
-        // If email confirmation is required by Supabase
-        setSuccessMsg('Registration successful! Please check your email inbox to confirm your account.');
-        setTimeout(() => {
-          router.push('/login');
-        }, 3000);
       }
     } catch (err: unknown) {
-      const error = err as Error;
-      setErrorMsg(error.message || 'An unexpected error occurred. Please verify your connection.');
+      setErrorMsg('An unexpected error occurred. Please check your network connection.');
     } finally {
       setLoading(false);
     }
