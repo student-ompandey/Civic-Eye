@@ -1,14 +1,23 @@
 export type IssueSeverity = 'critical' | 'high' | 'medium' | 'low' | 'resolved';
 
 export interface Issue {
-  id: string;
+  _id?: string;
+  userId: string;
   title: string;
   description: string;
-  imageUrl?: string;
   category: string;
   severity: IssueSeverity;
-  status: 'reported' | 'in-progress' | 'resolved';
-  location: string;
-  createdAt: string;
-  updatedAt: string;
+  status: 'Open' | 'In Progress' | 'Resolved';
+  latitude: number;
+  longitude: number;
+  address: string;
+  landmark: string;
+  city: string;
+  state: string;
+  aiConfidence: number;
+  aiRisk: string;
+  department: string;
+  imageUrl?: string;
+  createdAt: Date;
+  updatedAt: Date;
 }

@@ -18,7 +18,8 @@ import {
   CheckCircle2,
   AlertCircle,
   ShieldAlert,
-  ArrowLeft
+  ArrowLeft,
+  FileText
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -50,6 +51,8 @@ export default function ReportIssue() {
   // Step 2: AI Analysis State
   const [aiProcessing, setAiProcessing] = useState(false);
   const [aiStepIndex, setAiStepIndex] = useState(0);
+  const [isDemoMode, setIsDemoMode] = useState(false);
+  const [apiError, setApiError] = useState<string | null>(null);
   const [aiData, setAiData] = useState({
     category: 'Road Pothole',
     severity: 'high' as IssueSeverity,
@@ -76,6 +79,12 @@ export default function ReportIssue() {
   const [stateName, setStateName] = useState('');
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
   const [locationError, setLocationError] = useState<string | null>(null);
+
+  // Step 5: Submission State
+  const [submitting, setSubmitting] = useState(false);
+  const [submissionError, setSubmissionError] = useState<string | null>(null);
+  const [submittedId, setSubmittedId] = useState<string | null>(null);
+  const [potentialDuplicate, setPotentialDuplicate] = useState<any | null>(null);
 
   // Handlers for Step 1: Photo Upload
   const handleFileChange = (selectedFile: File) => {
@@ -128,27 +137,80 @@ export default function ReportIssue() {
   };
 
   // Handlers for Step 2: AI Simulation
-  const startAiAnalysis = () => {
-    setAiProcessing(true);
-    setAiStepIndex(0);
+  const fileToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = error => reject(error);
+    });
   };
 
-  useEffect(() => {
-    if (!aiProcessing) return;
+  const startAiAnalysis = async () => {
+    setAiProcessing(true);
+    setAiStepIndex(0);
+    setApiError(null);
+    setIsDemoMode(false);
 
-    if (aiStepIndex < aiChecklist.length) {
-      const timer = setTimeout(() => {
-        setAiStepIndex((prev) => prev + 1);
-      }, 1000);
-      return () => clearTimeout(timer);
-    } else {
-      // Completed processing after checklist finished
-      const timer = setTimeout(() => {
+    let hasError = false;
+
+    // Start UI checklist simulation
+    const checklistInterval = setInterval(() => {
+      setAiStepIndex((prev) => {
+        if (prev < aiChecklist.length - 1) return prev + 1;
+        clearInterval(checklistInterval);
+        return prev;
+      });
+    }, 800);
+
+    try {
+      if (!file) throw new Error("No image file selected");
+      const base64 = await fileToBase64(file);
+      const res = await fetch('/api/analyze-issue', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ image: base64 })
+      });
+      
+      const data = await res.json();
+
+      if (res.status === 503 && data.demo_mode) {
+        setIsDemoMode(true);
+        // keep default mock data
+      } else if (!res.ok) {
+        throw new Error(data.error || "Failed to analyze image");
+      } else {
+        if (data.issueDetected) {
+          setAiData({
+            category: data.category || 'Other Civic Issue',
+            severity: data.severity as IssueSeverity || 'medium',
+            confidence: data.confidence || 85,
+            risk: data.risk || 'General safety concern.',
+            department: data.department || 'General Administration',
+            description: data.description || 'Civic issue detected.'
+          });
+        } else {
+          setAiData(prev => ({
+            ...prev,
+            description: data.reason || "No issue detected",
+            confidence: 0
+          }));
+        }
+      }
+    } catch (err: any) {
+      console.error(err);
+      setApiError(err.message || "Something went wrong.");
+      hasError = true;
+    } finally {
+      clearInterval(checklistInterval);
+      setAiStepIndex(aiChecklist.length);
+      if (!hasError) {
+        setTimeout(() => setAiProcessing(false), 500);
+      } else {
         setAiProcessing(false);
-      }, 500);
-      return () => clearTimeout(timer);
+      }
     }
-  }, [aiProcessing, aiStepIndex, aiChecklist.length]);
+  };
 
   // Handlers for Step 3: Location Fetching
   const fetchCurrentLocation = () => {
@@ -194,8 +256,67 @@ export default function ReportIssue() {
     setStateName('');
   };
 
+  const submitIssue = async () => {
+    setSubmitting(true);
+    setSubmissionError(null);
+    try {
+      const base64 = await fileToBase64(file!);
+      const payload = {
+        title: aiData.category,
+        description: aiData.description,
+        category: aiData.category,
+        severity: aiData.severity,
+        latitude: coords?.lat || 0,
+        longitude: coords?.lng || 0,
+        address,
+        landmark,
+        city,
+        state: stateName,
+        aiConfidence: aiData.confidence,
+        aiRisk: aiData.risk,
+        department: aiData.department,
+        imageUrl: base64
+      };
+
+      const res = await fetch('/api/issues', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to submit issue');
+      
+      setSubmittedId(data.id);
+      setCurrentStep(5);
+    } catch (err: any) {
+      console.error(err);
+      setSubmissionError(err.message || 'Something went wrong during submission.');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const confirmExistingIssue = async () => {
+    if (!potentialDuplicate?.existingIssue?.id) return;
+    setSubmitting(true);
+    try {
+      const res = await fetch(`/api/issues/${potentialDuplicate.existingIssue.id}/support`, {
+        method: 'POST',
+      });
+      if (!res.ok) throw new Error('Failed to support issue');
+      setSubmittedId(potentialDuplicate.existingIssue.id);
+      setCurrentStep(5);
+    } catch (err: any) {
+      console.error(err);
+      setSubmissionError(err.message || 'Failed to confirm existing issue.');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   // Navigation Logic
-  const handleNext = () => {
+  const handleNext = async () => {
     if (currentStep === 1) {
       if (!file) {
         setUploadError('Please select or capture a photo before proceeding.');
@@ -212,7 +333,38 @@ export default function ReportIssue() {
       }
       setCurrentStep(4);
     } else if (currentStep === 4) {
-      setCurrentStep(5);
+      setSubmitting(true);
+      setSubmissionError(null);
+      try {
+        const payloadCheck = {
+          latitude: coords?.lat || 0,
+          longitude: coords?.lng || 0,
+          category: aiData.category,
+          description: aiData.description
+        };
+
+        const dupRes = await fetch('/api/issues/check-duplicate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payloadCheck)
+        });
+
+        if (dupRes.ok) {
+          const dupData = await dupRes.json();
+          if (dupData.isDuplicate) {
+            setPotentialDuplicate(dupData);
+            setCurrentStep(4.5); // New duplicate confirmation step
+            return;
+          }
+        }
+
+        await submitIssue();
+      } catch (err: any) {
+        console.error(err);
+        setSubmissionError(err.message || 'Failed to check for duplicates.');
+      } finally {
+        setSubmitting(false);
+      }
     }
   };
 
@@ -375,6 +527,12 @@ export default function ReportIssue() {
                     <CardTitle className="flex items-center gap-2">
                       <Sparkles className="h-5 w-5 text-brand-blue animate-pulse" />
                       Gemini AI Analysis
+                      {isDemoMode && (
+                        <span className="ml-auto text-[10px] bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 px-2 py-0.5 rounded-full border border-amber-200 dark:border-amber-800 flex items-center gap-1 font-bold tracking-wider">
+                          <AlertCircle className="h-3 w-3" />
+                          DEMO MODE
+                        </span>
+                      )}
                     </CardTitle>
                     <CardDescription>
                       Our vision model analyzes your report image to classify the problem and predict severity.
@@ -414,6 +572,19 @@ export default function ReportIssue() {
                             );
                           })}
                         </div>
+                      </div>
+                    ) : apiError ? (
+                      <div className="flex flex-col items-center justify-center text-center gap-4 py-12">
+                        <div className="h-12 w-12 rounded-full bg-red-100/50 flex items-center justify-center text-red-500">
+                          <ShieldAlert className="h-6 w-6" />
+                        </div>
+                        <div>
+                          <h3 className="font-bold text-sm">Analysis Failed</h3>
+                          <p className="text-xs text-muted-foreground mt-1 max-w-xs">{apiError}</p>
+                        </div>
+                        <Button variant="outline" size="sm" onClick={startAiAnalysis} className="mt-2 font-semibold">
+                          Retry Analysis
+                        </Button>
                       </div>
                     ) : (
                       // Editable AI analysis report view
@@ -753,16 +924,83 @@ export default function ReportIssue() {
 
                     </div>
                   </CardContent>
-                  <CardFooter className="justify-between border-t border-border/40 py-4 bg-muted/20 rounded-b-xl gap-3">
-                    <Button variant="outline" size="sm" onClick={handleBack} className="font-semibold cursor-pointer">
-                      <ChevronLeft className="h-4 w-4 mr-1" />
-                      Back
-                    </Button>
-                    <Button variant="default" onClick={handleNext} className="bg-brand-blue hover:bg-brand-blue/90 text-white font-semibold shadow-xs cursor-pointer">
-                      Submit Report
-                      <ChevronRight className="h-4 w-4 ml-1" />
-                    </Button>
+                  <CardFooter className="flex-col border-t border-border/40 py-4 bg-muted/20 rounded-b-xl gap-3">
+                    <div className="flex justify-between w-full">
+                      <Button variant="outline" size="sm" onClick={handleBack} disabled={submitting} className="font-semibold cursor-pointer">
+                        <ChevronLeft className="h-4 w-4 mr-1" />
+                        Back
+                      </Button>
+                      <Button variant="default" onClick={handleNext} disabled={submitting} className="bg-brand-blue hover:bg-brand-blue/90 text-white font-semibold shadow-xs cursor-pointer">
+                        {submitting ? 'Submitting...' : 'Submit Report'}
+                        {!submitting && <ChevronRight className="h-4 w-4 ml-1" />}
+                      </Button>
+                    </div>
+                    {submissionError && (
+                      <div className="w-full mt-2 p-3.5 rounded-lg bg-red-100/60 dark:bg-red-950/20 text-red-600 dark:text-red-400 border border-red-200/40 dark:border-red-950/30 flex items-start gap-2 text-xs font-semibold">
+                        <ShieldAlert className="h-4 w-4 shrink-0 mt-0.5" />
+                        <span>{submissionError}</span>
+                      </div>
+                    )}
                   </CardFooter>
+                </Card>
+              )}
+
+              {/* STEP 4.5: DUPLICATE DETECTION WARNING */}
+              {currentStep === 4.5 && potentialDuplicate && (
+                <Card hoverEffect={false} className="border-amber-500/50 shadow-lg flex-1 flex flex-col items-center p-6 bg-amber-500/5 dark:bg-amber-900/10">
+                  <div className="h-14 w-14 rounded-full bg-amber-100 dark:bg-amber-950/40 text-amber-600 dark:text-amber-500 flex items-center justify-center mb-4 border border-amber-200/50 dark:border-amber-900/50">
+                    <ShieldAlert className="h-7 w-7" />
+                  </div>
+                  
+                  <h2 className="text-xl font-bold tracking-tight text-foreground text-center">Possible Existing Issue Found</h2>
+                  <p className="text-sm text-muted-foreground mt-2 max-w-sm text-center">
+                    We found a similar issue reported nearby. Please check if this matches your report to avoid creating duplicates.
+                  </p>
+
+                  <div className="w-full mt-6 bg-background rounded-xl p-4 border border-border/80 shadow-xs flex flex-col sm:flex-row gap-4 items-center sm:items-start text-left">
+                    {potentialDuplicate.existingIssue.imageUrl ? (
+                      <div className="h-24 w-24 shrink-0 relative rounded-lg overflow-hidden border border-border/40">
+                        <Image src={potentialDuplicate.existingIssue.imageUrl} alt="Existing" fill className="object-cover" />
+                      </div>
+                    ) : (
+                      <div className="h-24 w-24 shrink-0 relative rounded-lg border border-border/40 bg-muted flex items-center justify-center text-muted-foreground">
+                        <FileText className="h-8 w-8 opacity-20" />
+                      </div>
+                    )}
+                    
+                    <div className="flex-1 flex flex-col gap-1.5 w-full">
+                      <h3 className="font-bold text-sm line-clamp-2">{potentialDuplicate.existingIssue.title}</h3>
+                      <div className="flex flex-wrap gap-1.5 items-center">
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800">
+                          {potentialDuplicate.probability}% Match
+                        </span>
+                        <span className="text-[10px] text-muted-foreground font-semibold bg-muted px-2 py-0.5 rounded-md border border-border/60">
+                          {potentialDuplicate.distance}m away
+                        </span>
+                        <span className="text-[10px] text-muted-foreground font-semibold bg-muted px-2 py-0.5 rounded-md border border-border/60">
+                          {potentialDuplicate.existingIssue.status}
+                        </span>
+                      </div>
+                      <p className="text-xs text-muted-foreground line-clamp-2 mt-1">
+                        {potentialDuplicate.existingIssue.description}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row gap-3 mt-8 w-full">
+                    <Button variant="default" onClick={confirmExistingIssue} disabled={submitting} className="flex-1 bg-brand-blue hover:bg-brand-blue/90 text-white font-semibold">
+                      {submitting ? 'Confirming...' : 'Confirm Existing Issue'}
+                    </Button>
+                    <Button variant="outline" onClick={submitIssue} disabled={submitting} className="flex-1 font-semibold text-muted-foreground hover:text-foreground">
+                      {submitting ? 'Submitting...' : 'Submit New Issue'}
+                    </Button>
+                  </div>
+                  
+                  {submissionError && (
+                    <div className="w-full mt-4 p-3.5 rounded-lg bg-red-100/60 dark:bg-red-950/20 text-red-600 dark:text-red-400 border border-red-200/40 dark:border-red-950/30 text-xs font-semibold flex justify-center">
+                      <span>{submissionError}</span>
+                    </div>
+                  )}
                 </Card>
               )}
 
@@ -780,8 +1018,15 @@ export default function ReportIssue() {
 
                   <div className="mt-6 p-4 rounded-xl border border-brand-blue/20 bg-brand-blue/5 flex flex-col items-center max-w-xs w-full">
                     <span className="text-[10px] font-bold uppercase tracking-wider text-brand-blue">Reference Ticket ID</span>
-                    <span className="text-lg font-mono font-black text-foreground mt-1">CIV-DEMO-001</span>
+                    <span className="text-lg font-mono font-black text-foreground mt-1">{submittedId ? submittedId.substring(0, 8).toUpperCase() : 'CIV-DEMO-001'}</span>
                   </div>
+
+                  {submittedId && (
+                    <div className="mt-4 flex flex-col items-center gap-1">
+                      <span className="text-xs text-muted-foreground font-semibold">Status: <span className="text-brand-blue">Open</span></span>
+                      <span className="text-xs text-muted-foreground font-semibold">Location: {address}</span>
+                    </div>
+                  )}
 
                   <div className="flex flex-col sm:flex-row gap-3.5 mt-8 w-full max-w-sm justify-center">
                     <Button
